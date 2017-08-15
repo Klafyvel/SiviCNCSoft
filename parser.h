@@ -1,40 +1,40 @@
-// #ifndef H_DFA
-// #define H_DFA
+#ifndef H_PARSER
+#define H_PARSER
 
-// // #include <iostream>
+#include "Arduino.h"
 
-// #include "settings.h"
+#include "settings.h"
 
-// #include "stack.h"
-// #include "queue.h"
+#include "stack.h"
+#include "queue.h"
 
-// #include "communication.h"
-// #include "codeVar.h"
-
-// namespace parser
-// {
-//   class Parser
-//   {
-//   public:
-//     Parser();
-//     ~Parser() {}
-
-//     float parseNum(Queue<char>* num) const;
-//     bool parseWord(Queue<char>* word);
-//     void parse(char car);
-    
-//     void flush();
-
-//     bool isSet(uint8_t var) const;
-//     float getVar(uint8_t var) const;
-//     bool commandOver() const;
-    
-//   private:
-//     bool setVar[NB_VAR];
-//     float var[NB_VAR];
-//     bool endOfLine;
-//   };
-// }
+#include "communication.h"
+#include "codeVar.h"
 
 
-// #endif
+class Parser
+{
+public:
+  Parser();
+  ~Parser() {}
+
+  bool parse(char car);
+  
+  void flush();
+
+  bool isSet(uint8_t var) const;
+  float getVar(uint8_t var) const;
+  bool commandOver() const;
+  
+private:
+  float parseNum();
+  bool parseWord();
+
+  bool setVar[NB_VAR];
+  float var[NB_VAR];
+  bool endOfLine;
+  Queue<char> word;
+};
+
+
+#endif

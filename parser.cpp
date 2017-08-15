@@ -1,101 +1,130 @@
-// #include "parser.h"
+#include "parser.h"
 
-// namespace parser {
-//   Parser::Parser() {
-//     endOfLine = false;
-//     for (int i = 0; i < NB_VAR; ++i)
-//     {
-//       setVar[i] = false;
-//       var[i] = 0.0;
-//     }
-//   }
+Parser::Parser() {
+  endOfLine = false;
+  for (int i = 0; i < NB_VAR; ++i)
+  {
+    setVar[i] = false;
+    var[i] = 0.0;
+  }
+}
 
-//   bool Parser::parseWord(Queue<char>* word) {
-//     uint8_t command = commandOfChar(word->pop());
-//     if (command == UNKNW)
-//       return false
-//     float arg = Parser::parseNum(word);
-//     if(setVar[command])
-//     {
-//       error(sprintf("%c already defined.", c));
-//       return false
-//     }
-//     setVar[command] = true;
-//     var[command] = arg;
-//     return true;
-//   }
+bool Parser::parseWord() {
+  dinfo("Parsing word.");
+  while(!(this->word.empty()) && (this->word.peek() == ' '))
+    this->word.pop();
+  char c = this->word.peek();
+  uint8_t command = commandOfChar(this->word.pop());
+  dinfo("Found command");
+  dchar(charOfCommand(command));
+  if (command == CODE_UNKNW)
+    return false;
+  float arg = Parser::parseNum();
+  if(this->setVar[command])
+  {
+    derror("Already defined");
+    dchar(charOfCommand(command));
+    return false;
+  }
+  this->setVar[command] = true;
+  this->var[command] = arg;
+  dinfo("Done parsing var.");
+  return true;
+}
 
-//   float Parser::parseNum(queue<char>* num) const{
-//     Queue<uint8_t> decimals;
-//     Stack<uint8_t> integers;
-//     float res = 0;
-//     bool currentIsDecimals = false;
-//     while(! num->empty()) {
-//       char currentChar = num->pop();
-//       uint8_t n = 0;
-//       bool changed = false;
-//       switch(currentChar) {
-//         case '0' : n = 0; break;
-//         case '1' : n = 1; break;
-//         case '2' : n = 2; break;
-//         case '3' : n = 3; break;
-//         case '4' : n = 4; break;
-//         case '5' : n = 5; break;
-//         case '6' : n = 6; break;
-//         case '7' : n = 7; break;
-//         case '8' : n = 8; break;
-//         case '9' : n = 9; break;
-//         case '.' : changed = true; break;
-//         default : break;
-//       }
-//       if(changed) {
-//         currentIsDecimals = true;
-//       }
-//       else if (currentIsDecimals)
-//         decimals.push(n);
-//       else 
-//         integers.push(n);
-//     }
-//     int k = 1;
-//     while(!integers.empty()) {
-//       res += k * integers.pop();
-//       k *= 10;
-//     }
-//     float k = 0.1;
-//     while(!decimals.empty()) {
-//       res += k * decimals.pop();
-//       k *= 0.1;
-//     }
-//     return res;
-//   }
+float Parser::parseNum(){
+  dinfo("parsing number");
+  Queue<float> decimals = Queue<float>();
+  Stack<float> integers = Stack<float>();
+  float res = 0;
+  bool currentIsDecimals = false;
+  while(!(this->word.empty()) && (this->word.peek() != ' ') && (this->word.peek() != '\n')) 
+  {
+    char currentChar = this->word.pop();
+    float n = 0;
+    bool changed = false;
+    switch(currentChar) {
+      case '0' : n = 0; break;
+      case '1' : n = 1; break;
+      case '2' : n = 2; break;
+      case '3' : n = 3; break;
+      case '4' : n = 4; break;
+      case '5' : n = 5; break;
+      case '6' : n = 6; break;
+      case '7' : n = 7; break;
+      case '8' : n = 8; break;
+      case '9' : n = 9; break;
+      case '.' : changed = true; break;
+      default : break;
+    }
+    if(changed) {
+      currentIsDecimals = true;
+    }
+    else if (currentIsDecimals)
+      decimals.push(n);
+    else 
+    {
+      integers.push(n);
+    }
+  }
+  dinfo("Begin sum.");
+  float k = 1;
+  while(!integers.empty()) {
+    dinfo("there are integers");
+    res += (k * integers.pop());
+    k *= 10;
+  }
+  dinfo("Done integers.");
+  float j = 0.1;
+  while(!decimals.empty()) {
+    res += j * decimals.pop();
+    j *= 0.1;
+  }
+  dinfo("Done number.");
+  return res;
+}
 
-//   void Parser::parse(char car) {
-//     Queue word = Queue();
-//     if (car == '\n' || car == ' ')
-//     {
-//       if(! parse(*word))
-//         error(sprintf("While parsing word before char %d", i))
-//       word = Queue();
-//     }
-//     else 
-//       word.push(car);
-//     if (car == '\n')
-//     {
-//       endOfLine = true;
-//     }
-//   }
+bool Parser::parse(char car) {
+  dinfo("Parsing");
+  if ((car == '\n') || (car == ' '))
+  {
+    if(!Parser::parseWord())
+    {
+      derror(sprintf("While parsing word before char %c", &car));
+      return false;
+    }
+    this->word = Queue<char>();
+  }
+  else 
+  {
+    dinfo("Adding");
+    dchar(car);
+    this->word.push(car);
+  }
+  if (car == '\n')
+  {
+    endOfLine = true;
+  }
+  return true;
+}
 
-//   void Parser::flush() {
-//     endOfLine = false;
-//     for (int i = 0; i < NB_VAR; ++i)
-//     {
-//       setVar[i] = false;
-//       var[i] = 0.0;
-//     }
-//   }
+void Parser::flush() {
+  endOfLine = false;
+  for (int i = 0; i < NB_VAR; ++i)
+  {
+    setVar[i] = false;
+    var[i] = 0.0;
+  }
+}
 
-//   void Parser::commandOver() const {
-//     return endOfLine;
-//   }
+bool Parser::commandOver() const {
+  return endOfLine;
+}
 
-// }
+bool Parser::isSet(uint8_t var) const {
+  return this->setVar[var];
+}
+
+float Parser::getVar(uint8_t var) const {
+  return this->var[var];
+}

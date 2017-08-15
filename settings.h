@@ -1,7 +1,7 @@
 #ifndef H_SETTINGS
 #define H_SETTINGS
 
-#define DEBUG
+// #define DEBUG
 
 #define NB_AXES 3
 

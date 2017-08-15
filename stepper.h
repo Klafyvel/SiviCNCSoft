@@ -27,17 +27,17 @@ enum Direction
 const uint8_t DRIVE_NORMAL_NB_STEP = 4;
 const uint8_t DRIVE_NORMAL_STEP[4] = {
 	0b1000,
-	0b0010,
+	0b0001,
 	0b0100,
-	0b0001
+	0b0010
 };
 
 const uint8_t DRIVE_FULL_NB_STEP = 4;
 const uint8_t DRIVE_FULL_STEP[4] = {
 	0b1010,
-	0b1001,
+	0b0110,
 	0b0101,
-	0b0110
+	0b1001
 };
 
 const uint8_t DRIVE_HALF_NB_STEP = 8;

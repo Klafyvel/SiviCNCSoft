@@ -1,26 +1,98 @@
+
+#include "parser.h"
+#include "codeVar.h"
 #include "axis.h"
 #include "stepper.h"
 
-Axis a = Axis();
+
+Axis x = Axis();
+Axis y = Axis();
+Axis z = Axis();
+Parser p = Parser();
+unsigned long lastTime = 0;
+
+unsigned long timer = 0;
 
 void setup()
 {
   Serial.begin(9600);
-  a.stepper = Stepper(6,7,8,9, DRIVE_FULL);
-  a.minTime = 10;
+  Serial.flush();
+  x.stepper = Stepper(2,3,4,5);
+  x.minTime = 10;
+  z.stepper = Stepper(6,7,8,9, DRIVE_FULL);
+  z.minTime = 15;
+  y.stepper = Stepper(10,11,12,13, DRIVE_FULL);
+  y.minTime = 15;
+  lastTime = millis();
+  timer = millis();
+  p.flush();
 }
 
 void loop()
 {
-  if(Serial.available())
+  if(Serial.available()>0)
   {
-    a.registerMovement(-300, 30);
-  }
-  bool b = a.move();
-  delay(a.minTime);
+  	int c = Serial.read();
+  	dinfo("Availabe");
 
-  if(b)
+    if(!p.parse((char)c))
+    {
+      p.flush();
+      Serial.println("error");
+    }
+  }
+  if(p.commandOver())
   {
+  	dinfo("Command over.");
+    uint8_t s = 3;
+    if(p.isSet(CODE_S))
+    {
+    	dinfo("S set.");
+      s = p.getVar(CODE_S);
+    }
+    if(p.isSet(CODE_X))
+    {
+    	dinfo("X set");
+      processS(&x, s);
+    }
+    if(p.isSet(CODE_Y))
+    {
+    	dinfo("Y set");
+      processS(&y, s);
+    }
+    if(p.isSet(CODE_Z))
+    {
+    	dinfo("Z set");
+      processS(&z, s);
+    }
+    p.flush();
+    Serial.flush();
     Serial.println("ok");
   }
+
+  if(millis()-timer > x.minTime)
+  {
+  	timer = millis();
+  	x.move();
+  	y.move();
+  	z.move();
+  }
+
+}
+
+void processS(Axis* a, uint8_t s)
+{
+	a->stop();
+	switch(s)
+	{
+		case 1 : a->startContinuous(FORWARD); break;
+		case 2 : a->startContinuous(BACKWARD); break;
+		case 3 : a->stop(); break;
+		case 5 : a->stepper.mode = DRIVE_NORMAL; break;
+		case 6 : a->stepper.mode = DRIVE_FULL; break;
+		case 7 : a->stepper.mode = DRIVE_NORMAL; break;
+		case 9 : a->reversed = true; break;
+		case 10 : a->reversed = false; break;
+		default: break;
+	}
 }

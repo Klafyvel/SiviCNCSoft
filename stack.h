@@ -1,45 +1,49 @@
 #ifndef H_STACK
 #define H_STACK
 
-template <typename T>
-struct StackElem {
-  T elem;
-  struct StackElem* next;
-};
+#include "communication.h"
+
+#define MAX_STACK_SIZE 256
 
 template <typename T>
 class Stack
 {
 public:
-  Stack() : first(NULL), length(0) {}
-  ~Stack() {
-    while(first != NULL)
-    {
-      struct StackElem* current = first;
-      first = first->next;
-      delete current;
-    }
-  }
+  Stack() : first(0), length(0) {}
+  ~Stack() {}
+
   void push(T elem) {
-    ++length;
-    struct StackElem* newElem = new struct StackElem;
-    newElem->next = first;
-    newElem->elem = elem;
-    first = newElem;
-  }
+    dinfo("Pushing stack.");
+    if (this->length >= MAX_STACK_SIZE)
+      derror("stack overflow.");
+
+    ++this->length;
+
+    uint8_t newElemAdd = (this->first + 1) % MAX_STACK_SIZE;
+
+    this->elements[newElemAdd] = elem;
+    this->first = newElemAdd;
+  };
   T pop() {
-    --length;
-    struct StackElem* current = first;
-    T elem = current->elem;
-    first = current->next;
-    delete current;
-    return elem;
-  }
-  bool empty() const {return first==NULL;}
-  uint8_t size() const {return length;}
+    if (this->length <= 0)
+      derror("stack empty.");
+
+    uint8_t elemAdd = this->first;
+    this->first = (this->first - 1) % MAX_STACK_SIZE;
+
+    --this->length;
+
+    return this->elements[elemAdd];
+  };
+  void peek() {
+    return this->elements[this->first];
+  };
+  bool empty() const {return this->length <= 0;};
+  uint8_t size() const {return this->length;};
 private:
-  struct StackELem* first;
+  T elements[MAX_STACK_SIZE];
   uint8_t length;
+  uint8_t first;
 };
 
 #endif

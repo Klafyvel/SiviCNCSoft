@@ -35,6 +35,7 @@ public:
 	float play; // mm
 	bool reversed;
 	unsigned long minTime; // ms
+	unsigned long timer;
 
 private:
 	void moveMm();

@@ -31,7 +31,7 @@ void Axis::registerMovement(float mm, float mmStep)
 
 	if(this->currentDirection != this->lastDirection)
 	{
-		int n;
+		double n;
 		this->remains += modf(this->play/this->ratio, &n);
 		for (int i = 0; i < n; ++i)
 			this->stepper.step(this->currentDirection);
@@ -41,10 +41,9 @@ void Axis::registerMovement(float mm, float mmStep)
 
 void Axis::startContinuous(Direction dir)
 {
-	this->stepper.pause();
 	this->currentMovement = MOVEMENT_CONTINUOUS;
-	this->currentDirection = dir;
-	this->lastDirection = dir;
+	this->currentDirection = this->reversed?dir:-dir;
+	this->lastDirection = this->reversed?dir:-dir;
 	this->nbStep = 1;
 }
 
@@ -53,8 +52,8 @@ void Axis::registerMovementStep(int steps)
 	this->stepper.pause();
 	this->currentMovement = MOVEMENT_STEP;
 	this->nbStep = abs(steps);
-	this->currentDirection = dir(steps);
-	this->lastDirection = dir(steps);
+	this->currentDirection = this->reversed?dir(steps):-dir(steps);
+	this->lastDirection = this->reversed?dir(steps):-dir(steps);
 }
 
 void Axis::stop()
@@ -67,7 +66,7 @@ void Axis::stop()
 
 bool Axis::move()
 {
-	if((this->nbStep <= 0 ) || (this->currentMovement==MOVEMENT_NONE))
+	if((this->nbStep <= 0 ) || (this->currentMovement==MOVEMENT_NONE) || (millis() - this->timer < this->minTime))
 	{
 		this->stepper.pause();
 		return true;
@@ -82,10 +81,12 @@ bool Axis::move()
 	else
 		Axis::moveMm();
 
+	this->timer = millis();
+
 	return this->nbStep == 0;
 }
 
-void moveMM()
+void Axis::moveMm()
 {
 	for (int i = 0; i < this->step; ++i)
 	{
@@ -116,7 +117,7 @@ void moveMM()
 	}
 }
 
-void moveStep()
+void Axis::moveStep()
 {
 	for (int i = 0; i < this->nbStep; ++i)
 	{
