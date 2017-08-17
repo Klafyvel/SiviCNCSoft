@@ -38,12 +38,14 @@ float Parser::parseNum(){
   Stack<float> integers = Stack<float>();
   float res = 0;
   bool currentIsDecimals = false;
+  bool negative = false;
   while(!(this->word.empty()) && (this->word.peek() != ' ') && (this->word.peek() != '\n')) 
   {
     char currentChar = this->word.pop();
     float n = 0;
     bool changed = false;
     switch(currentChar) {
+      case '-' : negative=true; break;
       case '0' : n = 0; break;
       case '1' : n = 1; break;
       case '2' : n = 2; break;
@@ -80,6 +82,8 @@ float Parser::parseNum(){
     res += j * decimals.pop();
     j *= 0.1;
   }
+  if(negative)
+    res *= -1;
   dinfo("Done number.");
   return res;
 }
