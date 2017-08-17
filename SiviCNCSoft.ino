@@ -49,21 +49,22 @@ void loop()
     {
     	dinfo("S set.");
       s = p.getVar(CODE_S);
+
     }
     if(p.isSet(CODE_X))
     {
     	dinfo("X set");
-      processS(&x, s);
+      processS(&x, s, p.getVar(CODE_X));
     }
     if(p.isSet(CODE_Y))
     {
     	dinfo("Y set");
-      processS(&y, s);
+      processS(&y, s, p.getVar(CODE_Y));
     }
     if(p.isSet(CODE_Z))
     {
     	dinfo("Z set");
-      processS(&z, s);
+      processS(&z, s, p.getVar(CODE_Z));
     }
     p.flush();
     Serial.flush();
@@ -80,11 +81,12 @@ void loop()
 
 }
 
-void processS(Axis* a, uint8_t s)
+void processS(Axis* a, uint8_t s, float s_arg)
 {
 	a->stop();
 	switch(s)
 	{
+    case 0: a->registerMovementStep(s_arg); break;
 		case 1 : a->startContinuous(FORWARD); break;
 		case 2 : a->startContinuous(BACKWARD); break;
 		case 3 : a->stop(); break;
