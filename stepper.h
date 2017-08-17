@@ -31,6 +31,12 @@ const uint8_t DRIVE_NORMAL_STEP[4] = {
 	0b0100,
 	0b0010
 };
+const uint8_t DRIVE_NORMAL_STEP_REVERSE[4] = {
+	0b1000,
+	0b0010,
+	0b0100,
+	0b0001
+};
 
 const uint8_t DRIVE_FULL_NB_STEP = 4;
 const uint8_t DRIVE_FULL_STEP[4] = {
@@ -71,6 +77,7 @@ private:
 	uint8_t IN4;
 
 	uint8_t currentState;
+	Direction dir;
 };
 
 #endif

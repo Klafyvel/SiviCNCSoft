@@ -30,7 +30,8 @@ void Stepper::step(Direction direction)
 		case DRIVE_HALF: m = DRIVE_HALF_NB_STEP; break;
 		default : break;
 	}
-	this->currentState = (this->currentState + direction) % m;
+	this->currentState = (this->currentState + 1) % m;
+	this->dir = direction;
 	this->setOutput();
 }
 
@@ -49,7 +50,12 @@ void Stepper::setOutput()
 	uint8_t b = 0;
 	switch(this->mode)
 	{
-		case DRIVE_NORMAL : b = DRIVE_NORMAL_STEP[this->currentState]; break;
+		case DRIVE_NORMAL : 
+			if(this->dir == FORWARD)
+				b = DRIVE_NORMAL_STEP[this->currentState]; 
+			else
+				b = DRIVE_NORMAL_STEP_REVERSE[this->currentState];
+			break;
 		case DRIVE_FULL : b = DRIVE_FULL_STEP[this->currentState]; break;
 		case DRIVE_HALF : b = DRIVE_NORMAL_STEP[this->currentState]; break;
 		default: break;
