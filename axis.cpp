@@ -122,6 +122,7 @@ void Axis::moveStep()
 	for (int i = 0; i < this->nbStep; ++i)
 	{
 		this->stepper.step(this->currentDirection);
+		delay(this->minTime);
 	}
 	this->nbStep = 0;
 }
