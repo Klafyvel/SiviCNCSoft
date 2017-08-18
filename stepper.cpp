@@ -56,8 +56,18 @@ void Stepper::setOutput()
 			else
 				b = DRIVE_NORMAL_STEP_REVERSE[this->currentState];
 			break;
-		case DRIVE_FULL : b = DRIVE_FULL_STEP[this->currentState]; break;
-		case DRIVE_HALF : b = DRIVE_NORMAL_STEP[this->currentState]; break;
+		case DRIVE_FULL : 
+			if(this->dir == FORWARD)
+				b = DRIVE_FULL_STEP[this->currentState];
+			else
+				b = DRIVE_FULL_STEP_REVERSE[this->currentState]; 
+			break;
+		case DRIVE_HALF : 
+			if(this->dir == FORWARD)
+				b = DRIVE_NORMAL_STEP[this->currentState];
+			else
+				b = DRIVE_NORMAL_STEP_REVERSE[this->currentState]; 
+			break;
 		default: break;
 	}
 	digitalWrite(this->IN1, getB1(b));
