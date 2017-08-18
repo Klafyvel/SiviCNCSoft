@@ -9,5 +9,6 @@
 void initMelody();
 void startMelody();
 void validateMelody();
+void successMelody();
 
 #endif
