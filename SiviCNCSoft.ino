@@ -36,10 +36,7 @@ void loop()
   	dinfo("Availabe");
 
     if(!p.parse((char)c))
-    {
       p.flush();
-      Serial.println("error");
-    }
   }
   if(p.commandOver())
   {
@@ -71,13 +68,9 @@ void loop()
     Serial.println("ok");
   }
 
-  if(millis()-timer > x.minTime)
-  {
-  	timer = millis();
-  	x.move();
-  	y.move();
-  	z.move();
-  }
+	x.move();
+	y.move();
+	z.move();
 
 }
 
@@ -95,6 +88,7 @@ void processS(Axis* a, uint8_t s, float s_arg)
 		case 7 : a->stepper.mode = DRIVE_NORMAL; break;
 		case 9 : a->reversed = true; break;
 		case 10 : a->reversed = false; break;
+    case 11 : a->minTime = s_arg; break;
 		default: break;
 	}
 }

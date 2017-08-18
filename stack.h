@@ -3,7 +3,7 @@
 
 #include "communication.h"
 
-#define MAX_STACK_SIZE 256
+#define MAX_STACK_SIZE 64
 
 template <typename T>
 class Stack
@@ -15,7 +15,7 @@ public:
   void push(T elem) {
     dinfo("Pushing stack.");
     if (this->length >= MAX_STACK_SIZE)
-      derror("stack overflow.");
+      constError("stack overflow.");
 
     ++this->length;
 
@@ -26,7 +26,7 @@ public:
   };
   T pop() {
     if (this->length <= 0)
-      derror("stack empty.");
+      constError("stack empty.");
 
     uint8_t elemAdd = this->first;
     this->first = (this->first - 1) % MAX_STACK_SIZE;

@@ -66,7 +66,12 @@ void Axis::stop()
 
 bool Axis::move()
 {
-	if((this->nbStep <= 0 ) || (this->currentMovement==MOVEMENT_NONE) || (millis() - this->timer < this->minTime))
+	if( (millis() - this->timer < this->minTime))
+		return true;
+
+	this->timer = millis();
+
+	if((this->nbStep <= 0 ) || (this->currentMovement==MOVEMENT_NONE))
 	{
 		this->stepper.pause();
 		return true;
@@ -80,8 +85,6 @@ bool Axis::move()
 		Axis::moveStep();
 	else
 		Axis::moveMm();
-
-	this->timer = millis();
 
 	return this->nbStep == 0;
 }

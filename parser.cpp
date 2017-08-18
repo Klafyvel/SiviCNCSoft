@@ -1,33 +1,37 @@
 #include "parser.h"
 
 Parser::Parser() {
-  endOfLine = false;
+  this->endOfLine = false;
   for (int i = 0; i < NB_VAR; ++i)
   {
-    setVar[i] = false;
-    var[i] = 0.0;
+    this->setVar[i] = false;
+    this->var[i] = 0.0;
   }
 }
 
 bool Parser::parseWord() {
   dinfo("Parsing word.");
+
   while(!(this->word.empty()) && (this->word.peek() == ' '))
     this->word.pop();
+
   char c = this->word.peek();
   uint8_t command = commandOfChar(this->word.pop());
-  dinfo("Found command");
-  dchar(charOfCommand(command));
+
+  dvar(charOfCommand(command));
+
   if (command == CODE_UNKNW)
     return false;
+
   float arg = Parser::parseNum();
   if(this->setVar[command])
   {
-    derror("Already defined");
-    dchar(charOfCommand(command));
+    printError("Already defined");
     return false;
   }
   this->setVar[command] = true;
   this->var[command] = arg;
+
   dinfo("Done parsing var.");
   return true;
 }
@@ -39,6 +43,7 @@ float Parser::parseNum(){
   float res = 0;
   bool currentIsDecimals = false;
   bool negative = false;
+
   while(!(this->word.empty()) && (this->word.peek() != ' ') && (this->word.peek() != '\n')) 
   {
     char currentChar = this->word.pop();
@@ -77,10 +82,10 @@ float Parser::parseNum(){
     k *= 10;
   }
   dinfo("Done integers.");
-  float j = 0.1;
+  k = 0.1;
   while(!decimals.empty()) {
-    res += j * decimals.pop();
-    j *= 0.1;
+    res += k * decimals.pop();
+    k *= 0.1;
   }
   if(negative)
     res *= -1;
@@ -94,7 +99,7 @@ bool Parser::parse(char car) {
   {
     if(!Parser::parseWord())
     {
-      derror(sprintf("While parsing word before char %c", &car));
+      constError("Parsing error.");
       return false;
     }
     this->word = Queue<char>();
@@ -102,33 +107,33 @@ bool Parser::parse(char car) {
   else 
   {
     dinfo("Adding");
-    dchar(car);
+    dvar(car);
     this->word.push(car);
   }
   if (car == '\n')
   {
-    endOfLine = true;
+    this->endOfLine = true;
   }
   return true;
 }
 
 void Parser::flush() {
-  endOfLine = false;
+  this->endOfLine = false;
   for (int i = 0; i < NB_VAR; ++i)
   {
-    setVar[i] = false;
-    var[i] = 0.0;
+    this->setVar[i] = false;
+    this->var[i] = 0.0;
   }
 }
 
 bool Parser::commandOver() const {
-  return endOfLine;
+  return this->endOfLine;
 }
 
-bool Parser::isSet(uint8_t var) const {
+bool Parser::isSet(const uint8_t var) const {
   return this->setVar[var];
 }
 
-float Parser::getVar(uint8_t var) const {
+float Parser::getVar(const uint8_t var) const {
   return this->var[var];
 }

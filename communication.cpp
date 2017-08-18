@@ -1,22 +1,7 @@
 #include "communication.h"
 
-void derror(char* error)
+void printError(char* error)
 {
-	Serial.print("Error");
+	Serial.print(F("Error"));
 	Serial.println(error);
 }
-
-#ifdef DEBUG
-void dinfo(char* info)
-{
-	Serial.println(info);
-}
-
-void dchar(char c)
-{
-	Serial.println(c);
-}
-#else
-void dinfo(char* info) {}
-void dchar(char c) {}
-#endif
