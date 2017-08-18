@@ -3,7 +3,8 @@
 
 // #define DEBUG
 
-#define NB_AXES 3
+#define MELODY_STATE
+#define PIEZO_PIN A0
 
 
 #endif

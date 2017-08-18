@@ -4,6 +4,9 @@
 #include "axis.h"
 #include "stepper.h"
 
+#ifdef MELODY_STATE
+#include "melody.h"
+#endif
 
 Axis x = Axis();
 Axis y = Axis();
@@ -15,6 +18,10 @@ unsigned long timer = 0;
 
 void setup()
 {
+  #ifdef MELODY_STATE
+  initMelody();
+  startMelody();
+  #endif
   Serial.begin(9600);
   Serial.flush();
   x.stepper = Stepper(2,3,4,5);
@@ -66,6 +73,9 @@ void loop()
     p.flush();
     Serial.flush();
     Serial.println("ok");
+    #ifdef MELODY_STATE
+    validateMelody();
+    #endif
   }
 
 	x.move();

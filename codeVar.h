@@ -4,6 +4,8 @@
 #include "Arduino.h"
 
 
+#define NB_AXES 3
+
 #define NB_VAR  10
 
 #define CODE_UNKNW -1
