@@ -69,9 +69,25 @@ void Axis::stop()
 	this->currentMovement = MOVEMENT_NONE;
 }
 
+bool Axis::collide()
+{
+	if(this->endStop1 != 255) {
+		if(this->currentDirection == (this->reversed?FORWARD:BACKWARD) && !digitalRead(this->endStop1))
+			return true;
+	}
+	if(this->endStop2 != 255) {
+		if((this->currentDirection == (this->reversed?BACKWARD:FORWARD) && !digitalRead(this->endStop2)))
+			return true;
+	}
+	return false;
+}
+
 bool Axis::move()
 {
 	if( (millis() - this->timer < this->minTime))
+		return true;
+
+	if(Axis::collide())
 		return true;
 
 	this->timer = millis();

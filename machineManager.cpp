@@ -15,6 +15,17 @@ MachineManager::MachineManager()
 	pinMode(PIN_ENDSTOP_Y_1, INPUT_PULLUP);
 	pinMode(PIN_ENDSTOP_Y_2, INPUT_PULLUP);
 	pinMode(PIN_ENDSTOP_Z_1, INPUT_PULLUP);
+
+	this->axisX.endStop1 = PIN_ENDSTOP_X_1;
+	this->axisX.endStop2 = PIN_ENDSTOP_X_2;
+	this->axisZ.endStop1 = PIN_ENDSTOP_Z_1;
+	this->axisZ.endStop2 = PIN_ENDSTOP_Z_2;
+	this->axisY.endStop1 = PIN_ENDSTOP_Y_1;
+	this->axisY.endStop2 = PIN_ENDSTOP_Y_2;
+
+	this->errorXPreviously = false;
+	this->errorYPreviously = false;
+	this->errorZPreviously = false;
 }
 
 void MachineManager::command(Parser* parser)
@@ -59,4 +70,39 @@ void MachineManager::processSCode(uint8_t sCode, float param, Axis* axis)
 bool MachineManager::move()
 {
 	return this->axisX.move() && this->axisY.move() && this->axisZ.move();
+}
+
+void MachineManager::checkEvent()
+{
+	if(this->axisX.collide() && !this->errorXPreviously)
+	{			
+		constError("X end stop.");
+		this->errorXPreviously = true;
+	}
+	else
+		this->errorXPreviously = this->axisX.collide();
+
+	if(this->axisZ.collide() && !this->errorZPreviously)
+	{
+		constError("Z end stop.");
+		this->errorZPreviously = true;
+	}
+	else
+		this->errorZPreviously = this->axisZ.collide();
+
+	if(this->axisY.collide() && !this->errorYPreviously)
+	{
+		constError("Y end stop.");
+		this->errorYPreviously = true;
+	}
+	else
+		this->errorYPreviously = this->axisY.collide();
+
+}
+
+void MachineManager::stop()
+{
+	this->axisX.stop();
+	this->axisY.stop();
+	this->axisZ.stop();
 }

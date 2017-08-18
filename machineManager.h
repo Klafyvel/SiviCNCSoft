@@ -18,6 +18,7 @@ public:
 	void command(Parser* parser);
 	void checkEvent();
 	bool move();
+	void stop();
 
 	void processSCode(uint8_t sCode, float param, Axis* axis);
 
@@ -25,7 +26,9 @@ private:
 	Axis axisX;
 	Axis axisY;
 	Axis axisZ;
-	
+	bool errorXPreviously;
+	bool errorYPreviously;
+	bool errorZPreviously;
 };
 
 #endif

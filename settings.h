@@ -25,12 +25,13 @@
 #define PIN_AXIS_Z_3 12
 #define PIN_AXIS_Z_4 13
 
-#define PIN_ENDSTOP_X_1 A1
-#define PIN_ENDSTOP_X_2 A2
+#define PIN_ENDSTOP_X_2 A1
+#define PIN_ENDSTOP_X_1 A2
 
 #define PIN_ENDSTOP_Y_1 A4
 #define PIN_ENDSTOP_Y_2 A5
 
 #define PIN_ENDSTOP_Z_1 A3
+#define PIN_ENDSTOP_Z_2 255
 
 #endif

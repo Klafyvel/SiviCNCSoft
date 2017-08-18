@@ -16,10 +16,6 @@ void setup()
   Serial.begin(9600);
   Serial.flush();
   p.flush();
-
-  #ifdef MELODY_STATE
-  successMelody();
-  #endif
 }
 
 void loop()
@@ -35,6 +31,9 @@ void loop()
   if(p.commandOver())
     m.command(&p);
 
+
+  m.checkEvent();
+
 	if(m.move() && p.commandOver())
   {
     p.flush();
@@ -44,5 +43,4 @@ void loop()
     validateMelody();
     #endif
   }
-
 }

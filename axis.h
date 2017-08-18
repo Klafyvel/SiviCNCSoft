@@ -29,6 +29,8 @@ public:
 	void registerMovementStep(int steps);
 	void stop();
 	bool move();
+	bool collide();
+	Direction getCurrentDirection() const {return this->currentDirection;}
 
 	Stepper stepper;
 	float ratio; // mm/step
@@ -36,6 +38,8 @@ public:
 	bool reversed;
 	unsigned long minTime; // ms
 	unsigned long timer;
+	uint8_t endStop1;
+	uint8_t endStop2;
 
 private:
 	void moveMm();

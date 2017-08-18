@@ -4,9 +4,7 @@
 #include "Arduino.h"
 #include "settings.h" 
 
-#define constError(err) printError((char*)F(err))
-
-void printError(char* error);
+#define constError(err) Serial.print("Error : ");Serial.println(F(err))
 
 #ifdef DEBUG
 

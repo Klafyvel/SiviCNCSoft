@@ -26,7 +26,7 @@ bool Parser::parseWord() {
   float arg = Parser::parseNum();
   if(this->setVar[command])
   {
-    printError("Already defined");
+    constError("Already defined");
     return false;
   }
   this->setVar[command] = true;

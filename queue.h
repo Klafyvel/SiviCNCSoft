@@ -4,7 +4,7 @@
 
 #include "communication.h"
 
-#define MAX_QUEUE_SIZE 64
+#define MAX_QUEUE_SIZE 40
 
 template <typename T>
 class Queue
@@ -15,8 +15,10 @@ public:
   void push(T elem) {
     dinfo("Pushing queue");
 
-    if(this->length >= MAX_QUEUE_SIZE)
+    if(this->length >= MAX_QUEUE_SIZE) {
       constError("queue overflow.");
+      dvar(this->length);
+    }
 
     ++this->length;
 
@@ -25,8 +27,9 @@ public:
     this->last = (newElemAdd-1)% MAX_QUEUE_SIZE;
   }
   T pop() {
-    if (this->length <= 0)
+    if (this->length <= 0) {
       constError("queue empty.");
+    }
 
     uint8_t elemAdd = this->first;
     this->first = (this->first - 1)%MAX_QUEUE_SIZE;
