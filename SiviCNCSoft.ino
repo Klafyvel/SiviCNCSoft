@@ -70,6 +70,10 @@ void loop()
     	dinfo("Z set");
       processS(&z, s, p.getVar(CODE_Z));
     }
+  }
+
+	if(x.move() && y.move() && z.move() && p.commandOver())
+  {
     p.flush();
     Serial.flush();
     Serial.println("ok");
@@ -77,10 +81,6 @@ void loop()
     validateMelody();
     #endif
   }
-
-	x.move();
-	y.move();
-	z.move();
 
 }
 

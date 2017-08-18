@@ -8,8 +8,8 @@
 
 #include <math.h>
 
-#define sign(a) (a>0)?1:((a<0)?-1:0)
-#define dir(a) (a>0)?FORWARD:BACKWARD
+#define sign(a) ((a>0)?1:((a<0)?-1:0))
+#define dir(a) ((a>0)?FORWARD:BACKWARD)
 
 enum Movement
 {

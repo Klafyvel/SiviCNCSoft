@@ -37,6 +37,8 @@ void Axis::registerMovement(float mm, float mmStep)
 			this->stepper.step(this->currentDirection);
 		this->lastDirection = currentDirection;
 	}
+	this->timer = 0;
+	
 }
 
 void Axis::startContinuous(Direction dir)
@@ -45,6 +47,8 @@ void Axis::startContinuous(Direction dir)
 	this->currentDirection = this->reversed?dir:-dir;
 	this->lastDirection = this->reversed?dir:-dir;
 	this->nbStep = 1;
+	this->timer = 0;
+
 }
 
 void Axis::registerMovementStep(int steps)
@@ -54,6 +58,7 @@ void Axis::registerMovementStep(int steps)
 	this->nbStep = abs(steps);
 	this->currentDirection = this->reversed?dir(steps):-dir(steps);
 	this->lastDirection = this->reversed?dir(steps):-dir(steps);
+	this->timer = 0;
 }
 
 void Axis::stop()
