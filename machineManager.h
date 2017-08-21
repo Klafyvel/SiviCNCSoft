@@ -21,6 +21,8 @@ public:
 	void stop();
 
 	void processSCode(uint8_t sCode, float param, Axis* axis);
+	void processMCode(uint8_t mCode, float param, Axis* axis);
+	void processGCode(uint8_t gCode, float param, Axis* axis);
 
 private:
 	Axis axisX;
@@ -29,6 +31,8 @@ private:
 	bool errorXPreviously;
 	bool errorYPreviously;
 	bool errorZPreviously;
+
+	bool prgmRunning;
 };
 
 #endif

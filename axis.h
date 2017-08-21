@@ -33,11 +33,11 @@ public:
 	Direction getCurrentDirection() const {return this->currentDirection;}
 
 	Stepper stepper;
-	float ratio; // mm/step
+	float ratio; // step/mm
 	float play; // mm
 	bool reversed;
 	unsigned long minTime; // ms
-	unsigned long timer;
+	unsigned long time;
 	uint8_t endStop1;
 	uint8_t endStop2;
 
@@ -57,6 +57,8 @@ private:
 	float remains; // steps;
 
 	Movement currentMovement;
+
+	unsigned long timer;
 
 };
 

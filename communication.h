@@ -5,6 +5,7 @@
 #include "settings.h" 
 
 #define constError(err) Serial.print("Error : ");Serial.println(F(err))
+#define constWarning(warn) Serial.print("Warning : ");Serial.println(F(warn))
 
 #ifdef DEBUG
 

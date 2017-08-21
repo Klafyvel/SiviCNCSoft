@@ -31,7 +31,14 @@ MachineManager::MachineManager()
 void MachineManager::command(Parser* parser)
 {
 	if (parser->isSet(CODE_M))
-		return;
+	{
+		if (parser->isSet(CODE_X))
+			MachineManager::processMCode(parser->getVar(CODE_M), parser->getVar(CODE_X), &(this->axisX));
+		if (parser->isSet(CODE_Y))
+			MachineManager::processMCode(parser->getVar(CODE_M), parser->getVar(CODE_Y), &(this->axisY));
+		if (parser->isSet(CODE_Z))
+			MachineManager::processMCode(parser->getVar(CODE_M), parser->getVar(CODE_Z), &(this->axisZ));
+	}
 	else if (parser->isSet(CODE_G))
 		return;
 	else if (parser->isSet(CODE_S))
@@ -64,7 +71,41 @@ void MachineManager::processSCode(uint8_t sCode, float param, Axis* axis)
     case 11 : axis->minTime = param; break;
 		default: break;
 	}
+}
 
+void MachineManager::processMCode(uint8_t mCode, float param, Axis* axis)
+{
+	switch(mCode)
+	{
+		case 2: // End of program
+			#ifdef MELODY_STATE
+			successMelody();
+			#endif
+			this->prgmRunning = false;
+		case 3: // spindle start
+			this->prgmRunning = true;
+			break;
+		case 92 : // set step/mm
+			axis->ratio = param;
+			break;
+		case 112 : // Emergency stop
+			this->axisX.stop();
+			this->axisY.stop();
+			this->axisZ.stop();
+			break;
+		default : 
+			constWarning("Unknown M-Code");
+			break;
+	}
+}
+
+void MachineManager::processGCode(uint8_t gCode, float param, Axis* axis)
+{
+	switch(gCode)
+	{
+		case 00: break;
+		default : break;
+	}
 }
 
 bool MachineManager::move()
@@ -74,6 +115,8 @@ bool MachineManager::move()
 
 void MachineManager::checkEvent()
 {
+	if(!this->prgmRunning)
+		return;
 	if(this->axisX.collide() && !this->errorXPreviously)
 	{			
 		constError("X end stop.");
@@ -97,7 +140,6 @@ void MachineManager::checkEvent()
 	}
 	else
 		this->errorYPreviously = this->axisY.collide();
-
 }
 
 void MachineManager::stop()

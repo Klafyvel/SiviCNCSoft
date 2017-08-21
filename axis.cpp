@@ -18,26 +18,26 @@ Axis::Axis()
 	this->currentMovement = MOVEMENT_NONE;
 }
 
-void Axis::registerMovement(float mm, float mmStep)
+void Axis::registerMovement(float mm, float mmStep, float speed)
 {
 	this->currentMovement = MOVEMENT_MM;
 	this->stepper.pause();
-	this->step = abs(mmStep) / ratio;
-	this->nbStep = abs(mm) / ratio;
+	this->step = abs(mmStep) * this->ratio;
+	this->nbStep = abs(mm) * this->ratio;
 	this->mm = abs(mm);
 	this->mmStep = abs(mmStep);
-	this->remainStep = modf(mmStep / this->ratio, NULL);
+	this->remainStep = modf(mmStep * this->ratio, NULL);
 	this->currentDirection = ((mm >= 0)==!this->reversed)?FORWARD:BACKWARD;
 
 	if(this->currentDirection != this->lastDirection)
 	{
 		double n;
-		this->remains += modf(this->play/this->ratio, &n);
+		this->remains += modf(this->play * this->ratio, &n);
 		for (int i = 0; i < n; ++i)
 			this->stepper.step(this->currentDirection);
 		this->lastDirection = currentDirection;
 	}
-	this->timer = 0;
+	this->timer = millis();
 	
 }
 
